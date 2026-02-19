@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlas SBOM — Format-Native Dependency Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=DM+Mono:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f4f0;
+            --white: #ffffff;
+            --ink: #0d0d14;
+            --navy: #0f1a2e;
+            --mid: #6b6b7a;
+            --faint: #e2e1dc;
+            --line: rgba(13,13,20,0.1);
+            --accent: #c8371a;
+            --accent-light: rgba(200,55,26,0.06);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Inter', system-ui, sans-serif;
+            font-weight: 300;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+            padding: 0 3rem;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-family: 'DM Mono', monospace;
+            font-weight: 400;
+            font-size: 0.85rem;
+            letter-spacing: 0.25em;
+            color: var(--ink);
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-logo sup { font-size: 0.55rem; color: var(--accent); letter-spacing: 0; vertical-align: super; }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.12em;
+            color: var(--mid);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--ink); }
+        .nav-links a.active { color: var(--ink); }
+
+        .nav-tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            text-transform: uppercase;
+            border-left: 1px solid var(--line);
+            padding-left: 3rem;
+        }
+
+        /* HERO */
+        .hero {
+            padding-top: 56px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--line);
+            min-height: 80vh;
+        }
+
+        .hero-left {
+            padding: 5rem 3rem;
+            border-right: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--white);
+        }
+
+        .hero-right {
+            padding: 5rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-id {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.2em;
+            color: var(--mid);
+            text-transform: uppercase;
+        }
+
+        .hero-h1 {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(2.8rem, 5vw, 5rem);
+            line-height: 1.05;
+            color: var(--navy);
+            letter-spacing: -0.01em;
+            margin: 3rem 0;
+        }
+
+        .hero-h1 strong {
+            font-style: normal;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            font-size: 0.85em;
+            letter-spacing: -0.03em;
+            display: block;
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: var(--mid);
+            line-height: 1.75;
+            max-width: 44ch;
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ink);
+            text-decoration: none;
+            border: 1px solid var(--ink);
+            padding: 0.85rem 1.5rem;
+            transition: all 0.25s;
+            margin-top: 2.5rem;
+            align-self: flex-start;
+        }
+
+        .btn-outline:hover { background: var(--ink); color: var(--bg); }
+        .btn-outline .arrow { transition: transform 0.25s; }
+        .btn-outline:hover .arrow { transform: translateX(4px); }
+
+        /* PROBLEM STATEMENT */
+        .problem-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--mid);
+            margin-bottom: 2rem;
+        }
+
+        .problem-quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: var(--navy);
+            font-weight: 300;
+            border-left: 2px solid var(--accent);
+            padding-left: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .problem-detail {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            line-height: 1.8;
+            color: var(--mid);
+            letter-spacing: 0.03em;
+        }
+
+        /* FORMAT COMPARISON */
+        .formats {
+            border-bottom: 1px solid var(--line);
+            background: var(--white);
+        }
+
+        .formats-header {
+            padding: 3rem 3rem 2rem;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--mid);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--mid);
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--line);
+        }
+
+        .format-cell {
+            background: var(--white);
+            padding: 2.5rem 3rem;
+        }
+
+        .format-name {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
+
+        .format-desc {
+            font-size: 0.88rem;
+            color: var(--mid);
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+        }
+
+        .format-supported {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .format-supported::before {
+            content: '✓';
+            font-size: 0.7rem;
+        }
+
+        /* CAPABILITIES */
+        .capabilities {
+            border-bottom: 1px solid var(--line);
+        }
+
+        .cap-header {
+            padding: 3rem 3rem 0;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 2rem;
+        }
+
+        .cap-list {
+            list-style: none;
+        }
+
+        .cap-row {
+            display: grid;
+            grid-template-columns: 60px 1fr 1fr;
+            gap: 2rem;
+            padding: 2.5rem 3rem;
+            border-bottom: 1px solid var(--line);
+            align-items: start;
+            transition: background 0.2s;
+        }
+
+        .cap-row:hover { background: var(--white); }
+        .cap-row:last-child { border-bottom: none; }
+
+        .cap-num {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--mid);
+            letter-spacing: 0.15em;
+            padding-top: 0.2rem;
+        }
+
+        .cap-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .cap-desc {
+            font-size: 0.85rem;
+            color: var(--mid);
+            line-height: 1.65;
+        }
+
+        .cap-technical {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--mid);
+            line-height: 1.7;
+            letter-spacing: 0.02em;
+            border-left: 1px solid var(--line);
+            padding-left: 2rem;
+        }
+
+        /* VS DEPENDENCY TRACK */
+        .comparison {
+            border-bottom: 1px solid var(--line);
+            background: var(--white);
+        }
+
+        .comp-header {
+            padding: 3rem 3rem 2rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .comp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--line);
+        }
+
+        .comp-col {
+            background: var(--white);
+            padding: 2.5rem 3rem;
+        }
+
+        .comp-col:first-child {
+            background: var(--bg);
+        }
+
+        .comp-col-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--mid);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .comp-col-label span {
+            color: var(--accent);
+        }
+
+        .comp-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.88rem;
+            color: var(--mid);
+            line-height: 1.5;
+        }
+
+        .comp-item::before {
+            content: '—';
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--mid);
+            flex-shrink: 0;
+            padding-top: 0.1rem;
+        }
+
+        .comp-col:last-child .comp-item::before {
+            content: '✓';
+            color: var(--accent);
+        }
+
+        .comp-col:last-child .comp-item {
+            color: var(--ink);
+        }
+
+        /* USE CASES */
+        .usecases {
+            border-bottom: 1px solid var(--line);
+            display: grid;
+            grid-template-columns: 280px 1fr;
+        }
+
+        .usecase-aside {
+            padding: 4rem 3rem;
+            border-right: 1px solid var(--line);
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .usecase-aside-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--mid);
+        }
+
+        .usecase-aside-text {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--navy);
+            font-weight: 300;
+            margin-top: auto;
+        }
+
+        .usecase-main {
+            padding: 4rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+        }
+
+        .usecase-item {}
+
+        .usecase-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 0.88rem;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .usecase-desc {
+            font-size: 0.85rem;
+            color: var(--mid);
+            line-height: 1.65;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 1.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--line);
+        }
+
+        .footer-left {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.15em;
+            color: var(--mid);
+            text-transform: uppercase;
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-nav a {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.62rem;
+            letter-spacing: 0.1em;
+            color: var(--mid);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .footer-nav a:hover { color: var(--ink); }
+
+        /* ANIMATIONS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            nav { padding: 0 1.5rem; }
+            .nav-links { display: none; }
+            .nav-tag { padding-left: 1.5rem; }
+            .hero { grid-template-columns: 1fr; min-height: auto; }
+            .hero-left { border-right: none; border-bottom: 1px solid var(--line); padding: 4rem 1.5rem; }
+            .hero-right { padding: 3rem 1.5rem; }
+            .format-grid { grid-template-columns: 1fr; }
+            .cap-row { grid-template-columns: 40px 1fr; padding: 2rem 1.5rem; }
+            .cap-technical { display: none; }
+            .comp-grid { grid-template-columns: 1fr; }
+            .usecases { grid-template-columns: 1fr; }
+            .usecase-aside { display: none; }
+            .usecase-main { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+            .formats-header, .cap-header, .comp-header { padding: 2rem 1.5rem; }
+            footer { padding: 1.5rem; flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="nav-logo">ATLAS<sup>®</sup></a>
+    <div class="nav-right">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sbom.html" class="active">Atlas SBOM</a></li>
+            <li><a href="sentinel.html">Atlas Sentinel</a></li>
+        </ul>
+        <span class="nav-tag">Dependency Intelligence</span>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-left">
+        <div class="product-id">Atlas SBOM — 002</div>
+        <div>
+            <h1 class="hero-h1">
+                <strong>Dependency Intelligence</strong>
+                Without the<br>Format<br>Friction.
+            </h1>
+            <p class="hero-sub">SBOM management that speaks CycloneDX and SPDX natively. No conversion pipeline. No manual steps. Works directly with how GitHub already generates SBOMs today.</p>
+        </div>
+        <span class="status-pill live" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:0.3rem 0.8rem;background:var(--accent-light);display:inline-block;">Live</span>
+    </div>
+
+    <div class="hero-right">
+        <div class="problem-label">The problem Atlas SBOM solves</div>
+
+        <blockquote class="problem-quote">
+            "GitHub exports SPDX. Dependency-Track dropped SPDX. So teams build conversion pipelines just to get started — and that's before any actual security work begins."
+        </blockquote>
+
+        <div class="problem-detail">
+            OWASP Dependency-Track is the reference implementation for SBOM analysis — but it's CycloneDX only, requires 8GB RAM to run, and can't scan artifacts directly. Atlas SBOM was built to handle the formats teams actually produce, without the infrastructure overhead.
+        </div>
+    </div>
+</section>
+
+<!-- FORMAT SUPPORT -->
+<section class="formats reveal">
+    <div class="formats-header">
+        <span class="section-label">Format support</span>
+        <span class="section-title">Native ingestion, no conversion required</span>
+    </div>
+    <div class="format-grid">
+
+        <div class="format-cell">
+            <div class="format-name">CycloneDX</div>
+            <p class="format-desc">The OWASP standard optimised for security automation. Supports all CycloneDX versions including v1.6 and v1.7. Ingests XML and JSON variants directly.</p>
+            <div class="format-supported">Natively supported</div>
+        </div>
+
+        <div class="format-cell">
+            <div class="format-name">SPDX</div>
+            <p class="format-desc">GitHub's native SBOM export format. Also common in compliance and legal workflows. Atlas SBOM ingests SPDX 2.x and SPDX 3.0 without any intermediate conversion step.</p>
+            <div class="format-supported">Natively supported</div>
+        </div>
+
+        <div class="format-cell">
+            <div class="format-name">GitHub Native</div>
+            <p class="format-desc">GitHub's dependency graph SBOM export produces SPDX directly. Atlas SBOM ingests this output as-is — no pipeline modifications, no format conversion, no extra tooling required.</p>
+            <div class="format-supported">Direct ingestion</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section class="capabilities reveal">
+    <div class="cap-header">
+        <span class="section-label">Capabilities</span>
+    </div>
+    <ul class="cap-list">
+
+        <li class="cap-row">
+            <div class="cap-num">01</div>
+            <div>
+                <div class="cap-title">Multi-format SBOM ingestion</div>
+                <div class="cap-desc">Accepts CycloneDX and SPDX in all current versions. Single ingestion endpoint handles both formats — no routing logic required in your CI pipeline.</div>
+            </div>
+            <div class="cap-technical">
+                Supported: CycloneDX 1.4–1.7<br>
+                Supported: SPDX 2.2, 2.3, 3.0<br>
+                Input: JSON, XML, RDF<br>
+                GitHub SBOM: direct import
+            </div>
+        </li>
+
+        <li class="cap-row">
+            <div class="cap-num">02</div>
+            <div>
+                <div class="cap-title">Vulnerability correlation</div>
+                <div class="cap-desc">Maps components in your SBOM to known vulnerabilities across NVD, GitHub Security Advisories, and OSV. Shows exactly which of your services are affected — not just which CVEs exist.</div>
+            </div>
+            <div class="cap-technical">
+                Sources: NVD, OSV, GHSA<br>
+                Matching: purl, CPE, SWID<br>
+                Output: per-service impact map<br>
+                Enrichment: EPSS scoring
+            </div>
+        </li>
+
+        <li class="cap-row">
+            <div class="cap-num">03</div>
+            <div>
+                <div class="cap-title">Dependency tree visualisation</div>
+                <div class="cap-desc">Full-stack dependency mapping across direct and transitive dependencies. See which services share a vulnerable component and trace the blast radius before patching.</div>
+            </div>
+            <div class="cap-technical">
+                Scope: direct + transitive<br>
+                View: per-project, portfolio<br>
+                Graph: upstream + downstream<br>
+                Export: JSON, SBOM
+            </div>
+        </li>
+
+        <li class="cap-row">
+            <div class="cap-num">04</div>
+            <div>
+                <div class="cap-title">CI/CD integration</div>
+                <div class="cap-desc">API-first design integrates into existing GitHub Actions workflows. Submit SBOMs on every build. Get vulnerability status back as part of your pipeline — fail builds on policy violations.</div>
+            </div>
+            <div class="cap-technical">
+                Interface: REST API<br>
+                Trigger: GitHub Actions<br>
+                Response: JSON findings<br>
+                Gate: policy-based pass/fail
+            </div>
+        </li>
+
+        <li class="cap-row">
+            <div class="cap-num">05</div>
+            <div>
+                <div class="cap-title">EU Cyber Resilience Act readiness</div>
+                <div class="cap-desc">SBOM management aligned with CRA requirements for software manufacturers. Maintains component inventory and vulnerability disclosure records in the format regulators expect.</div>
+            </div>
+            <div class="cap-technical">
+                Frameworks: CRA, NTIA<br>
+                Output: CycloneDX VDR<br>
+                Supports: VEX workflow<br>
+                Retention: versioned history
+            </div>
+        </li>
+
+    </ul>
+</section>
+
+<!-- VS DEPENDENCY TRACK -->
+<section class="comparison reveal">
+    <div class="comp-header">
+        <span class="section-label">Atlas SBOM vs OWASP Dependency-Track</span>
+    </div>
+    <div class="comp-grid">
+
+        <div class="comp-col">
+            <div class="comp-col-label">Dependency-Track — limitations</div>
+            <div class="comp-item">CycloneDX only — SPDX support dropped in v4.x roadmap</div>
+            <div class="comp-item">Requires 8GB RAM minimum — significant self-hosted overhead</div>
+            <div class="comp-item">No direct artifact scanning — 100% reliant on accurate SBOM input</div>
+            <div class="comp-item">GitHub SBOM (SPDX) requires manual conversion before import</div>
+            <div class="comp-item">No reachability analysis or modern prioritisation signals</div>
+            <div class="comp-item">Large teams triaging 100k+ findings face manual effort gap</div>
+        </div>
+
+        <div class="comp-col">
+            <div class="comp-col-label">Atlas SBOM — <span>what's different</span></div>
+            <div class="comp-item">CycloneDX and SPDX natively — no format politics</div>
+            <div class="comp-item">Lightweight deployment — designed for modern cloud environments</div>
+            <div class="comp-item">GitHub-native — ingests SBOM output without pipeline modification</div>
+            <div class="comp-item">Built for the CRA era — European regulatory alignment from day one</div>
+            <div class="comp-item">Agentic-ready — API design supports automated security workflows</div>
+            <div class="comp-item">Open source alternative — no vendor lock-in, auditable codebase</div>
+        </div>
+
+    </div>
+</section>
+
+<!-- USE CASES -->
+<section class="usecases reveal">
+    <div class="usecase-aside">
+        <div class="usecase-aside-label">Who uses Atlas SBOM</div>
+        <p class="usecase-aside-text">Any team generating SBOMs from GitHub who needs vulnerability intelligence without the conversion overhead.</p>
+    </div>
+    <div class="usecase-main">
+
+        <div class="usecase-item">
+            <div class="usecase-title">DevSecOps teams on GitHub</div>
+            <p class="usecase-desc">Use GitHub's native SBOM export and feed it directly into Atlas SBOM for vulnerability analysis — no additional tooling in the pipeline.</p>
+        </div>
+
+        <div class="usecase-item">
+            <div class="usecase-title">Security teams doing CRA compliance</div>
+            <p class="usecase-desc">Maintain the component inventory and vulnerability disclosure records required by the EU Cyber Resilience Act without building a custom compliance workflow.</p>
+        </div>
+
+        <div class="usecase-item">
+            <div class="usecase-title">Organisations leaving Dependency-Track</div>
+            <p class="usecase-desc">Teams frustrated by SPDX removal or infrastructure overhead looking for an open-source alternative that handles the full format landscape.</p>
+        </div>
+
+        <div class="usecase-item">
+            <div class="usecase-title">Security firms managing multiple clients</div>
+            <p class="usecase-desc">Multi-tenant SBOM management across a client portfolio. Track component usage and vulnerability exposure across all projects in one place.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-left">Atlas SBOM · Dependency Intelligence · 2026</div>
+    <ul class="footer-nav">
+        <li><a href="index.html">← All tools</a></li>
+        <li><a href="sentinel.html">Atlas Sentinel →</a></li>
+    </ul>
+</footer>
+
+<script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+        });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
