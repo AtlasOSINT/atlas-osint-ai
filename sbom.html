@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atlas SBOM — Format-Native Dependency Intelligence</title>
+    <title>Atlas SBOM — CRA-Ready SBOM Management</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=DM+Mono:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,300;1,400&display=swap" rel="stylesheet">
@@ -542,7 +542,7 @@
             <li><a href="sbom.html" class="active">Atlas SBOM</a></li>
             <li><a href="sentinel.html">Atlas Sentinel</a></li>
         </ul>
-        <span class="nav-tag">Dependency Intelligence</span>
+        <span class="nav-tag">CRA Compliance · SBOM</span>
     </div>
 </nav>
 
@@ -552,10 +552,10 @@
         <div class="product-id">Atlas SBOM — 002</div>
         <div>
             <h1 class="hero-h1">
-                <strong>Dependency Intelligence</strong>
-                Without the<br>Format<br>Friction.
+                <strong>CRA-Ready SBOM</strong>
+                Management. Without the<br>Format<br>Friction.
             </h1>
-            <p class="hero-sub">SBOM management that speaks CycloneDX and SPDX natively. No conversion pipeline. No manual steps. Works directly with how GitHub already generates SBOMs today.</p>
+            <p class="hero-sub">The EU Cyber Resilience Act deadline is December 2027. Most teams are not ready. Atlas SBOM gives you audit-ready SBOM compliance across your entire repository portfolio — without the cost and complexity of an enterprise platform.</p>
         </div>
         <span class="status-pill live" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent);padding:0.3rem 0.8rem;background:var(--accent-light);display:inline-block;">Live</span>
     </div>
@@ -564,13 +564,28 @@
         <div class="problem-label">The problem Atlas SBOM solves</div>
 
         <blockquote class="problem-quote">
-            "GitHub exports SPDX. Dependency-Track dropped SPDX. So teams build conversion pipelines just to get started — and that's before any actual security work begins."
+            "CRA requires software manufacturers to maintain a complete SBOM and disclose vulnerabilities — but most teams don't even know what format their tools produce, let alone whether it will hold up to a regulator."
         </blockquote>
 
         <div class="problem-detail">
-            OWASP Dependency-Track is the reference implementation for SBOM analysis — but it's CycloneDX only, requires 8GB RAM to run, and can't scan artifacts directly. Atlas SBOM was built to handle the formats teams actually produce, without the infrastructure overhead.
+            The EU Cyber Resilience Act deadline is December 2027 — and the SBOM requirements are non-trivial. Meanwhile, the tooling landscape is fragmented: GitHub exports SPDX, Dependency-Track dropped SPDX, and teams spend more time on format conversion than on actual compliance work. Atlas SBOM was built to eliminate that overhead and give you a clear path to CRA readiness.
         </div>
     </div>
+</section>
+
+<!-- CRA URGENCY BANNER -->
+<section style="background:var(--navy);padding:1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;">
+    <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;color:rgba(255,255,255,0.5);text-transform:uppercase;">CRA Compliance Deadline</div>
+    <div style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.1rem;color:#fff;font-weight:300;">EU Cyber Resilience Act enforcement begins <strong style="font-style:normal;font-family:'Inter',sans-serif;color:var(--accent);">December 2027</strong> — component inventory and vulnerability disclosure records are mandatory for all software manufacturers.</div>
+</section>
+
+<!-- PRODUCT SCREENSHOT -->
+<section style="background:var(--white);border-bottom:1px solid var(--line);padding:5rem 3rem;">
+    <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid);margin-bottom:2rem;">CRA Compliance Dashboard</div>
+    <div style="border:1px solid var(--line);border-radius:2px;overflow:hidden;box-shadow:0 8px 40px rgba(13,13,20,0.08);">
+        <img src="https://www.atlas-osint.ai/images/sbom1.png" alt="Atlas SBOM — CRA Compliance Dashboard showing SBOM quality scores across repository portfolio" style="width:100%;display:block;">
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;color:var(--mid);margin-top:1.5rem;">CRA readiness overview across 76 tracked products — quality scores, PURL coverage, dependency graph status, and disclosure tracking in one view.</p>
 </section>
 
 <!-- FORMAT SUPPORT -->
@@ -612,8 +627,22 @@
         <li class="cap-row">
             <div class="cap-num">01</div>
             <div>
+                <div class="cap-title">EU Cyber Resilience Act compliance reporting</div>
+                <div class="cap-desc">Stop building compliance documentation manually. Atlas SBOM generates the component inventory and vulnerability disclosure records required by CRA — in the exact format regulators and auditors expect. Ready to submit on day one.</div>
+            </div>
+            <div class="cap-technical">
+                Frameworks: CRA, NTIA<br>
+                Output: CycloneDX VDR<br>
+                Supports: VEX workflow<br>
+                Retention: versioned history
+            </div>
+        </li>
+
+        <li class="cap-row">
+            <div class="cap-num">02</div>
+            <div>
                 <div class="cap-title">Multi-format SBOM ingestion</div>
-                <div class="cap-desc">Accepts CycloneDX and SPDX in all current versions. Single ingestion endpoint handles both formats — no routing logic required in your CI pipeline.</div>
+                <div class="cap-desc">Your tools produce CycloneDX. Your customer requires SPDX. GitHub exports SPDX. Dependency-Track dropped it. Atlas SBOM handles all of it natively — one ingestion endpoint, no conversion scripts, no manual steps before the real work starts.</div>
             </div>
             <div class="cap-technical">
                 Supported: CycloneDX 1.4–1.7<br>
@@ -624,7 +653,7 @@
         </li>
 
         <li class="cap-row">
-            <div class="cap-num">02</div>
+            <div class="cap-num">03</div>
             <div>
                 <div class="cap-title">Vulnerability correlation</div>
                 <div class="cap-desc">Maps components in your SBOM to known vulnerabilities across NVD, GitHub Security Advisories, and OSV. Shows exactly which of your services are affected — not just which CVEs exist.</div>
@@ -638,7 +667,7 @@
         </li>
 
         <li class="cap-row">
-            <div class="cap-num">03</div>
+            <div class="cap-num">04</div>
             <div>
                 <div class="cap-title">Dependency tree visualisation</div>
                 <div class="cap-desc">Full-stack dependency mapping across direct and transitive dependencies. See which services share a vulnerable component and trace the blast radius before patching.</div>
@@ -652,7 +681,7 @@
         </li>
 
         <li class="cap-row">
-            <div class="cap-num">04</div>
+            <div class="cap-num">05</div>
             <div>
                 <div class="cap-title">CI/CD integration</div>
                 <div class="cap-desc">API-first design integrates into existing GitHub Actions workflows. Submit SBOMs on every build. Get vulnerability status back as part of your pipeline — fail builds on policy violations.</div>
@@ -662,20 +691,6 @@
                 Trigger: GitHub Actions<br>
                 Response: JSON findings<br>
                 Gate: policy-based pass/fail
-            </div>
-        </li>
-
-        <li class="cap-row">
-            <div class="cap-num">05</div>
-            <div>
-                <div class="cap-title">EU Cyber Resilience Act readiness</div>
-                <div class="cap-desc">SBOM management aligned with CRA requirements for software manufacturers. Maintains component inventory and vulnerability disclosure records in the format regulators expect.</div>
-            </div>
-            <div class="cap-technical">
-                Frameworks: CRA, NTIA<br>
-                Output: CycloneDX VDR<br>
-                Supports: VEX workflow<br>
-                Retention: versioned history
             </div>
         </li>
 
@@ -701,10 +716,10 @@
 
         <div class="comp-col">
             <div class="comp-col-label">Atlas SBOM — <span>what's different</span></div>
+            <div class="comp-item">Built for the CRA era — European regulatory alignment from day one</div>
             <div class="comp-item">CycloneDX and SPDX natively — no format politics</div>
             <div class="comp-item">Lightweight deployment — designed for modern cloud environments</div>
             <div class="comp-item">GitHub-native — ingests SBOM output without pipeline modification</div>
-            <div class="comp-item">Built for the CRA era — European regulatory alignment from day one</div>
             <div class="comp-item">Agentic-ready — API design supports automated security workflows</div>
             <div class="comp-item">Open source alternative — no vendor lock-in, auditable codebase</div>
         </div>
@@ -716,9 +731,19 @@
 <section class="usecases reveal">
     <div class="usecase-aside">
         <div class="usecase-aside-label">Who uses Atlas SBOM</div>
-        <p class="usecase-aside-text">Any team generating SBOMs from GitHub who needs vulnerability intelligence without the conversion overhead.</p>
+        <p class="usecase-aside-text">Teams that need CRA-ready SBOM management across multiple repositories — without the overhead of an enterprise compliance platform.</p>
     </div>
     <div class="usecase-main">
+
+        <div class="usecase-item">
+            <div class="usecase-title">Security teams doing CRA compliance</div>
+            <p class="usecase-desc">Maintain the component inventory and vulnerability disclosure records required by the EU Cyber Resilience Act. Audit-ready output without building a custom compliance workflow.</p>
+        </div>
+
+        <div class="usecase-item">
+            <div class="usecase-title">Security firms managing multiple clients</div>
+            <p class="usecase-desc">Multi-tenant SBOM management across a client portfolio. Track component usage and vulnerability exposure across all projects — and generate per-client CRA compliance reports.</p>
+        </div>
 
         <div class="usecase-item">
             <div class="usecase-title">DevSecOps teams on GitHub</div>
@@ -726,18 +751,8 @@
         </div>
 
         <div class="usecase-item">
-            <div class="usecase-title">Security teams doing CRA compliance</div>
-            <p class="usecase-desc">Maintain the component inventory and vulnerability disclosure records required by the EU Cyber Resilience Act without building a custom compliance workflow.</p>
-        </div>
-
-        <div class="usecase-item">
             <div class="usecase-title">Organisations leaving Dependency-Track</div>
             <p class="usecase-desc">Teams frustrated by SPDX removal or infrastructure overhead looking for an open-source alternative that handles the full format landscape.</p>
-        </div>
-
-        <div class="usecase-item">
-            <div class="usecase-title">Security firms managing multiple clients</div>
-            <p class="usecase-desc">Multi-tenant SBOM management across a client portfolio. Track component usage and vulnerability exposure across all projects in one place.</p>
         </div>
 
     </div>
@@ -745,7 +760,7 @@
 
 <!-- FOOTER -->
 <footer>
-    <div class="footer-left">Atlas SBOM · Dependency Intelligence · 2026</div>
+    <div class="footer-left">Atlas SBOM · CRA-Ready SBOM Management · 2026</div>
     <ul class="footer-nav">
         <li><a href="index.html">← All tools</a></li>
         <li><a href="sentinel.html">Atlas Sentinel →</a></li>
